@@ -1,77 +1,103 @@
+from datetime import datetime as dt
+import sys
 import argparse
 import requests
-from datetime import datetime as dt
-
 from config import get_config, validate_config
 from formatting import format_table
 
 
-cf_uri ="https://api.cloudflare.com/client/v4/zones/{zone}/email/routing/rules"
+CF_URI = "https://api.cloudflare.com/client/v4/zones/{zone}/email/routing/rules"
+
 
 def get_email_aliases():
-    c = get_config()
+    conf = get_config()
     headers = {
-        "Authorization": "Bearer " + c.get("CF_TOKEN")
+        "Authorization": "Bearer " + conf.get("CF_TOKEN")
     }
-    
-    r = requests.get(cf_uri.format(zone=c.get("CF_ZONE")), headers=headers)
-    
-    return r.json()
+
+    try:
+        resp = requests.get(CF_URI.format(
+            zone=conf.get("CF_ZONE")), headers=headers, timeout=3)
+    except ConnectionError as err:
+        print(err)
+
+    return resp.json()
+
 
 def create_email_alias(dest):
-    c = get_config()
-    
+    conf = get_config()
+
     headers = {
-        "Authorization": "Bearer " + c.get("CF_TOKEN")
+        "Authorization": "Bearer " + conf.get("CF_TOKEN")
     }
 
-    t = dt.utcnow()
-    ts = t.isoformat(timespec='milliseconds') 
-    default_name = f"Rule created at {ts}Z"
-	
-    payload = {
-		"actions": [
-			{
-				"type": "forward",
-				"value": [c.get("CF_FORWARD_EMAIL")]
-			}
-		],
-		"enabled": True,
-		"matchers": [
-			{
-				"field": "to",
-				"type": "literal",
-				"value": dest
-			}
-		],
-		"name": default_name,
-		"priority": 0
-	}
+    time = dt.utcnow()
+    timestamp = time.isoformat(timespec='milliseconds')
+    default_name = f"Rule created at {timestamp}Z"
 
-    r = requests.request("POST", cf_uri.format(zone=c.get("CF_ZONE")), json=payload, headers=headers)
+    payload = {
+        "actions": [
+            {
+                "type": "forward",
+                        "value": [conf.get("CF_FORWARD_EMAIL")]
+            }
+        ],
+        "enabled": True,
+        "matchers": [
+            {
+                "field": "to",
+                "type": "literal",
+                "value": dest
+            }
+        ],
+        "name": default_name,
+        "priority": 0
+    }
+
+    try:
+        resp = requests.request("POST", CF_URI
+                                .format(zone=conf.get("CF_ZONE")), json=payload,
+                                        headers=headers, timeout=3)
+    except ConnectionError as err:
+        print(err)
+
+    return resp
+
 
 def remove_email_alias(alias):
     ruleid = ""
-    c = get_config()
-    
+    conf = get_config()
+
     headers = {
-        "Authorization": "Bearer " + c.get("CF_TOKEN")
+        "Authorization": "Bearer " + conf.get("CF_TOKEN")
     }
 
     data = get_email_aliases()
-    
-    try: 
-        ruleid = [i["tag"] for i in data["result"] if i["matchers"][0]["type"] == "literal" and i["matchers"][0]["value"] == alias][0]
+
+    try:
+        ruleid = [i["tag"] for i in data["result"] if i["matchers"][0]
+                  ["type"] == "literal" and i["matchers"][0]["value"] == alias][0]
     except IndexError:
-        exit("Error: Unable to find alias")
-    
-    r = requests.request("DELETE", cf_uri.format(zone=c.get("CF_ZONE")) + '/' + ruleid, headers=headers)
+        sys.exit("Error: Unable to find alias")
+
+    try:
+        resp = requests.request("DELETE", CF_URI
+                                .format(zone=conf.get("CF_ZONE")) + '/' + ruleid,
+                                        headers=headers, timeout=3)
+    except ConnectionError as err:
+        print(err)
+
+    return resp
+
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("-l", "--list", help="List email aliases", required=False, action="store_true")
-    parser.add_argument("-c", "--create", help="Create new email alias", required=False)
-    parser.add_argument("-r", "--remove", help="Remove email alias", required=False)
+    parser.add_argument("-l", "--list", help="List email aliases",
+                        required=False, action="store_true")
+    parser.add_argument(
+        "-c", "--create", help="Create new email alias", required=False)
+    parser.add_argument(
+        "-r", "--remove", help="Remove email alias", required=False)
 
     args = parser.parse_args()
 
@@ -82,6 +108,7 @@ def main():
         create_email_alias(args.create)
     elif args.remove:
         remove_email_alias(args.remove)
+
 
 if __name__ == "__main__":
     validate_config(get_config())

@@ -1,5 +1,4 @@
 import json
-
 from prettytable import PrettyTable, from_json
 
 
@@ -10,8 +9,8 @@ def format_table(data):
     for i in data['result']:
         if i['matchers'][0]['type'] == "literal":
             j.append({
-                "name": i["name"], 
-                "alias": i["matchers"][0]["value"], 
+                "name": i["name"],
+                "alias": i["matchers"][0]["value"],
                 "type": i["actions"][0]["type"],
                 "dest": i["actions"][0]["value"][0],
                 "enabled": i["enabled"]
@@ -19,5 +18,5 @@ def format_table(data):
 
     table = PrettyTable()
     table = from_json(json.dumps(j))
-    
-    return table 
+
+    return table
