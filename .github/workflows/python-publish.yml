@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 name: Upload Python Package
+=======
+name: upload to pypi
+>>>>>>> d8f410a79e09b83a3e9da277cf0fd0c578def6e9
 
 on:
   push:
