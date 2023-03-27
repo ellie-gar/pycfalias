@@ -6,6 +6,7 @@ setup(
     author='Eliel Garcia',
     author_email='inbox@eliel-garcia.com',
     description='Simple Cloudflare email alias management',
+    long_description='Simple Cloudflare email alias management',
     packages=['pycfalias'],
     entry_points={
         'console_scripts': [
