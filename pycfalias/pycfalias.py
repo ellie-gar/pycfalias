@@ -2,15 +2,17 @@ from datetime import datetime as dt
 import sys
 import argparse
 import requests
-from config import get_config, validate_config
-from formatting import format_table
+from . import config
+from . import formatting
+#from config import get_config, validate_config
+#from formatting import format_table
 
 
 CF_URI = "https://api.cloudflare.com/client/v4/zones/{zone}/email/routing/rules"
 
 
 def get_email_aliases():
-    conf = get_config()
+    conf = config.get_config()
     headers = {
         "Authorization": "Bearer " + conf.get("CF_TOKEN")
     }
@@ -25,7 +27,7 @@ def get_email_aliases():
 
 
 def create_email_alias(dest):
-    conf = get_config()
+    conf = config.get_config()
 
     headers = {
         "Authorization": "Bearer " + conf.get("CF_TOKEN")
@@ -66,7 +68,7 @@ def create_email_alias(dest):
 
 def remove_email_alias(alias):
     ruleid = ""
-    conf = get_config()
+    conf = config.get_config()
 
     headers = {
         "Authorization": "Bearer " + conf.get("CF_TOKEN")
@@ -99,10 +101,10 @@ def main():
     parser.add_argument(
         "-r", "--remove", help="Remove email alias", required=False)
 
-    args = parser.parse_args()
+    args = parser.parse_args(args=None if sys.argv[1:] else ['--help'])
 
     if args.list:
-        table = format_table(get_email_aliases())
+        table = formatting.format_table(get_email_aliases())
         print(table)
     elif args.create:
         create_email_alias(args.create)
@@ -111,5 +113,5 @@ def main():
 
 
 if __name__ == "__main__":
-    validate_config(get_config())
+    config.validate_config(config.get_config())
     main()
