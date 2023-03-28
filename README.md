@@ -11,7 +11,7 @@ Easy Cloudflare email alias management
    ```
    export CF_FORWARD_EMAIL=$your_forward_email
    export CF_TOKEN=$your_cloudflare_token
-   export CF_ZONE=$your_cloudflare_zone
+   export CF_ZONE_ID=$your_cloudflare_zone_id
    ``` 
    OR
 
@@ -19,7 +19,7 @@ Easy Cloudflare email alias management
    ```
    "CF_FORWARD_EMAIL" = "$your_forward_email"
    "CF_TOKEN" = "$your_cloudflare_token"
-   "CF_ZONE" = "$your_cloudflare_zone"
+   "CF_ZONE_ID" = "$your_cloudflare_zone_id"
    ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
