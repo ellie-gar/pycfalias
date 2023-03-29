@@ -17,7 +17,7 @@ def get_email_aliases():
 
     try:
         resp = requests.get(CF_URI.format(
-            zone=conf.get("CF_ZONE")), headers=headers, timeout=3)
+            zone=conf.get("CF_ZONE_ID")), headers=headers, timeout=3)
     except ConnectionError as err:
         print(err)
 
@@ -56,7 +56,7 @@ def create_email_alias(dest):
 
     try:
         resp = requests.request("POST", CF_URI
-                                .format(zone=conf.get("CF_ZONE")), json=payload,
+                                .format(zone=conf.get("CF_ZONE_ID")), json=payload,
                                         headers=headers, timeout=3)
     except ConnectionError as err:
         print(err)
@@ -82,7 +82,7 @@ def remove_email_alias(alias):
 
     try:
         resp = requests.request("DELETE", CF_URI
-                                .format(zone=conf.get("CF_ZONE")) + '/' + ruleid,
+                                .format(zone=conf.get("CF_ZONE_ID")) + '/' + ruleid,
                                         headers=headers, timeout=3)
     except ConnectionError as err:
         print(err)
