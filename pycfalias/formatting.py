@@ -9,13 +9,13 @@ def format_table(data):
     for i in data['result']:
         if i['matchers'][0]['type'] == "literal":
             j.append({
-                "name": i["name"],
-                "alias": i["matchers"][0]["value"],
-                "type": i["actions"][0]["type"],
-                "dest": i["actions"][0]["value"][0],
-                "enabled": i["enabled"]
+                "name": i.get("name", " "),
+                "alias": i.get("matchers")[0].get("value", " "),
+                "type": i.get("actions")[0].get("type", " "),
+                "dest": i.get("actions")[0].get("value", " ")[0],
+                "enabled": i.get("enabled", " ")
             })
-
+    
     table = PrettyTable()
     table = from_json(json.dumps(j))
 

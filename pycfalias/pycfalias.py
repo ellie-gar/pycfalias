@@ -4,8 +4,6 @@ import argparse
 import requests
 from . import config
 from . import formatting
-#from config import get_config, validate_config
-#from formatting import format_table
 
 
 CF_URI = "https://api.cloudflare.com/client/v4/zones/{zone}/email/routing/rules"
