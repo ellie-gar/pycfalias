@@ -9,7 +9,7 @@ def get_config():
     cf_auth = {
         "CF_FORWARD_EMAIL": os.getenv("CF_FORWARD_EMAIL"),
         "CF_TOKEN": os.getenv("CF_TOKEN"),
-        "CF_ZONE": os.getenv("CF_ZONE")
+        "CF_ZONE_ID": os.getenv("CF_ZONE_ID")
     }
 
     path = pathlib.Path(pathlib.Path.home(), '.pycfalias.toml')
