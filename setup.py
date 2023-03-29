@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name='pycfalias',
-    version='0.0.7',
+    version='0.0.8',
     author='Eliel Garcia',
     author_email='inbox@eliel-garcia.com',
     description='Simple Cloudflare email alias management',
